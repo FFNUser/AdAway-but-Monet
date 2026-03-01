@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,11 +19,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,7 +31,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -68,8 +67,10 @@ import org.adaway.db.entity.ListType
 import org.adaway.helper.ThemeHelper
 import org.adaway.ui.adblocking.ApplyConfigurationSnackbar
 import org.adaway.ui.compose.ExpressiveAppContainer
+import org.adaway.ui.compose.ExpressiveFloatingBottomBar
 import org.adaway.ui.compose.ExpressiveScaffold
 import org.adaway.ui.compose.ExpressiveSection
+import org.adaway.ui.compose.ExpressiveTopBar
 import org.adaway.ui.compose.safeCombinedClickable
 import org.adaway.util.Clipboard
 import org.adaway.util.RegexUtils
@@ -139,7 +140,6 @@ class ListsActivity : AppCompatActivity() {
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun ListsScreen(
     initialTab: Int,
     blockedItemsFlow: Flow<PagingData<HostListItem>>,
@@ -181,22 +181,9 @@ private fun ListsScreen(
 
     ExpressiveScaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.lists_title),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            painter = painterResource(androidx.appcompat.R.drawable.abc_ic_ab_back_material),
-                            contentDescription = stringResource(androidx.appcompat.R.string.abc_action_bar_up_description)
-                        )
-                    }
-                },
+            ExpressiveTopBar(
+                title = stringResource(R.string.lists_title),
+                onNavigateBack = onNavigateBack,
                 actions = {
                     IconButton(
                         onClick = {
@@ -218,13 +205,7 @@ private fun ListsScreen(
                             contentDescription = stringResource(R.string.lists_menu_toggle_sources)
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                    actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                }
             )
         },
         bottomBar = {
@@ -340,17 +321,21 @@ private fun ListsBottomNavigation(
     selectedTab: Int,
     onTabSelected: (Int) -> Unit
 ) {
-    NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-        tonalElevation = 0.dp
-    ) {
-        ListsTab.entries.forEach { tab ->
-            NavigationBarItem(
-                selected = selectedTab == tab.position,
-                onClick = { onTabSelected(tab.position) },
-                icon = { Icon(painterResource(tab.iconRes), null) },
-                label = { Text(stringResource(tab.labelRes)) }
-            )
+    ExpressiveFloatingBottomBar {
+        NavigationBar(
+            modifier = Modifier.fillMaxWidth(),
+            containerColor = Color.Transparent,
+            tonalElevation = 0.dp,
+            windowInsets = WindowInsets(0, 0, 0, 0)
+        ) {
+            ListsTab.entries.forEach { tab ->
+                NavigationBarItem(
+                    selected = selectedTab == tab.position,
+                    onClick = { onTabSelected(tab.position) },
+                    icon = { Icon(painterResource(tab.iconRes), null) },
+                    label = { Text(stringResource(tab.labelRes)) }
+                )
+            }
         }
     }
 }

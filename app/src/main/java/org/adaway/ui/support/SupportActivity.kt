@@ -16,6 +16,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,10 +38,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.adaway.R
+import org.adaway.helper.ThemeHelper
 import org.adaway.ui.compose.AdAwayExpressiveTheme
 import org.adaway.ui.compose.ExpressiveAppContainer
 import org.adaway.ui.compose.ExpressivePage
+import org.adaway.ui.compose.ExpressiveScaffold
 import org.adaway.ui.compose.ExpressiveSection
+import org.adaway.ui.compose.ExpressiveTopBar
 
 /**
  * This class is an activity for users to show their support to the project.
@@ -49,9 +53,13 @@ class SupportActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        ThemeHelper.applyTheme(this)
+        supportActionBar?.hide()
+
         setContent {
             ExpressiveAppContainer {
-                SupportContent(
+                SupportScreen(
+                    onNavigateBack = { onBackPressedDispatcher.onBackPressed() },
                     onSupportClick = { openLink(SUPPORT_LINK) },
                     onSponsorshipClick = { openLink(SPONSORSHIP_LINK) }
                 )
@@ -73,7 +81,33 @@ class SupportActivity : AppCompatActivity() {
 }
 
 @Composable
-private fun SupportContent(onSupportClick: () -> Unit, onSponsorshipClick: () -> Unit) {
+private fun SupportScreen(
+    onNavigateBack: () -> Unit,
+    onSupportClick: () -> Unit,
+    onSponsorshipClick: () -> Unit
+) {
+    ExpressiveScaffold(
+        topBar = {
+            ExpressiveTopBar(
+                title = stringResource(R.string.support_label),
+                onNavigateBack = onNavigateBack
+            )
+        }
+    ) { innerPadding ->
+        SupportContent(
+            contentPadding = innerPadding,
+            onSupportClick = onSupportClick,
+            onSponsorshipClick = onSponsorshipClick
+        )
+    }
+}
+
+@Composable
+private fun SupportContent(
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    onSupportClick: () -> Unit,
+    onSponsorshipClick: () -> Unit
+) {
     val heartTransition = rememberInfiniteTransition(label = "heart")
     val heartScale by heartTransition.animateFloat(
         initialValue = 1F,
@@ -85,7 +119,9 @@ private fun SupportContent(onSupportClick: () -> Unit, onSponsorshipClick: () ->
         label = "heartScale"
     )
 
-    ExpressivePage {
+    ExpressivePage(
+        modifier = Modifier.padding(contentPadding)
+    ) {
         Icon(
             painter = painterResource(R.drawable.baseline_favorite_24),
             contentDescription = stringResource(R.string.welcome_support_logo),

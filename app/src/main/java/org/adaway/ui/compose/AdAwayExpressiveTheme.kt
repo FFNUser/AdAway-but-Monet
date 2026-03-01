@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,13 +18,19 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -34,9 +41,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -214,6 +225,85 @@ fun ExpressiveScaffold(
         contentColor = MaterialTheme.colorScheme.onBackground,
         content = content
     )
+}
+
+@Composable
+fun ExpressiveFloatingBar(
+    modifier: Modifier = Modifier,
+    horizontalPadding: Dp = 16.dp,
+    verticalPadding: Dp = 10.dp,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.9f),
+    shape: Shape = MaterialTheme.shapes.large,
+    content: @Composable () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = horizontalPadding, vertical = verticalPadding)
+    ) {
+        Surface(
+            color = containerColor,
+            shape = shape,
+            tonalElevation = 3.dp,
+            shadowElevation = 8.dp
+        ) {
+            content()
+        }
+    }
+}
+
+@Composable
+fun ExpressiveFloatingBottomBar(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    ExpressiveFloatingBar(
+        modifier = modifier,
+        horizontalPadding = 16.dp,
+        verticalPadding = 12.dp,
+        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.94f),
+        shape = MaterialTheme.shapes.extraLarge,
+        content = content
+    )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun ExpressiveTopBar(
+    title: String,
+    onNavigateBack: (() -> Unit)? = null,
+    navigationContentDescription: String = stringResource(androidx.appcompat.R.string.abc_action_bar_up_description),
+    actions: @Composable RowScope.() -> Unit = {}
+) {
+    ExpressiveFloatingBar {
+        CenterAlignedTopAppBar(
+            title = {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
+            navigationIcon = {
+                if (onNavigateBack != null) {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            painter = painterResource(androidx.appcompat.R.drawable.abc_ic_ab_back_material),
+                            contentDescription = navigationContentDescription
+                        )
+                    }
+                }
+            },
+            actions = actions,
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.Transparent,
+                titleContentColor = MaterialTheme.colorScheme.onSurface,
+                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+            ),
+            windowInsets = WindowInsets(0, 0, 0, 0)
+        )
+    }
 }
 
 @Composable

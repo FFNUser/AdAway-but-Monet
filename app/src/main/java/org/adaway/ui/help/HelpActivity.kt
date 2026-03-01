@@ -22,17 +22,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -55,6 +49,9 @@ import androidx.compose.ui.unit.dp
 import org.adaway.R
 import org.adaway.helper.ThemeHelper
 import org.adaway.ui.compose.ExpressiveAppContainer
+import org.adaway.ui.compose.ExpressiveFloatingBar
+import org.adaway.ui.compose.ExpressiveScaffold
+import org.adaway.ui.compose.ExpressiveTopBar
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -89,7 +86,6 @@ private val helpTabs = listOf(
 )
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun HelpScreen(onNavigateBack: () -> Unit) {
     val context = LocalContext.current
     val tabContents = remember {
@@ -104,31 +100,12 @@ private fun HelpScreen(onNavigateBack: () -> Unit) {
         scrollState.scrollTo(0)
     }
 
-    Scaffold(
+    ExpressiveScaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = Color.Transparent,
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.menu_help),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            painter = painterResource(androidx.appcompat.R.drawable.abc_ic_ab_back_material),
-                            contentDescription = stringResource(androidx.appcompat.R.string.abc_action_bar_up_description)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
-                )
+            ExpressiveTopBar(
+                title = stringResource(R.string.menu_help),
+                onNavigateBack = onNavigateBack
             )
         }
     ) { innerPadding ->
@@ -137,23 +114,31 @@ private fun HelpScreen(onNavigateBack: () -> Unit) {
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            SecondaryTabRow(
-                selectedTabIndex = selectedTab,
-                containerColor = Color.Transparent,
-                contentColor = MaterialTheme.colorScheme.primary
+            ExpressiveFloatingBar(
+                horizontalPadding = 16.dp,
+                verticalPadding = 0.dp,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.9f),
+                shape = MaterialTheme.shapes.large
             ) {
-                helpTabs.forEachIndexed { index, tab ->
-                    Tab(
-                        selected = selectedTab == index,
-                        onClick = { selectedTab = index },
-                        text = {
-                            Text(
-                                text = context.getString(tab.titleRes),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Normal
-                            )
-                        }
-                    )
+                SecondaryTabRow(
+                    selectedTabIndex = selectedTab,
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.primary,
+                    divider = {}
+                ) {
+                    helpTabs.forEachIndexed { index, tab ->
+                        Tab(
+                            selected = selectedTab == index,
+                            onClick = { selectedTab = index },
+                            text = {
+                                Text(
+                                    text = context.getString(tab.titleRes),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Normal
+                                )
+                            }
+                        )
+                    }
                 }
             }
             HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))

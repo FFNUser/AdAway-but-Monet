@@ -75,6 +75,7 @@ import org.adaway.helper.ThemeHelper
 import org.adaway.model.adblocking.AdBlockMethod
 import org.adaway.model.error.HostError
 import org.adaway.ui.compose.ExpressiveAppContainer
+import org.adaway.ui.compose.ExpressiveFloatingBottomBar
 import org.adaway.ui.compose.ExpressiveScaffold
 import org.adaway.ui.compose.ExpressiveSection
 import org.adaway.ui.help.HelpActivity
@@ -312,52 +313,56 @@ private fun HomeScreen(
 ) {
     ExpressiveScaffold(
         bottomBar = {
-            BottomAppBar(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                contentColor = MaterialTheme.colorScheme.primary,
-                actions = {
-                    IconButton(onClick = onOpenDrawer) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_menu_24dp),
-                            contentDescription = stringResource(R.string.open_drawer_button_description)
-                        )
-                    }
-                    Spacer(modifier = Modifier.weight(1f))
-                    IconButton(onClick = onCheckSources) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_sync_24dp),
-                            contentDescription = stringResource(R.string.update_button)
-                        )
-                    }
-                    IconButton(onClick = onOpenLog) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_playlist_add_24dp),
-                            contentDescription = stringResource(R.string.show_log_button)
-                        )
-                    }
-                },
-                floatingActionButton = {
-                    FloatingActionButton(
-                        onClick = onToggleAdBlocking,
-                        containerColor = if (state.adBlocked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = if (state.adBlocked) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondaryContainer,
-                        shape = MaterialTheme.shapes.large
-                    ) {
-                        if (state.adBlocked) {
+            ExpressiveFloatingBottomBar {
+                BottomAppBar(
+                    modifier = Modifier.fillMaxWidth(),
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.primary,
+                    tonalElevation = 0.dp,
+                    actions = {
+                        IconButton(onClick = onOpenDrawer) {
                             Icon(
-                                painter = painterResource(R.drawable.ic_pause_24dp),
-                                contentDescription = stringResource(R.string.adblock_pause_button_description)
-                            )
-                        } else {
-                            Image(
-                                painter = painterResource(R.drawable.logo),
-                                contentDescription = stringResource(R.string.app_logo),
-                                modifier = Modifier.size(32.dp)
+                                painter = painterResource(R.drawable.ic_menu_24dp),
+                                contentDescription = stringResource(R.string.open_drawer_button_description)
                             )
                         }
+                        Spacer(modifier = Modifier.weight(1f))
+                        IconButton(onClick = onCheckSources) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_sync_24dp),
+                                contentDescription = stringResource(R.string.update_button)
+                            )
+                        }
+                        IconButton(onClick = onOpenLog) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_playlist_add_24dp),
+                                contentDescription = stringResource(R.string.show_log_button)
+                            )
+                        }
+                    },
+                    floatingActionButton = {
+                        FloatingActionButton(
+                            onClick = onToggleAdBlocking,
+                            containerColor = if (state.adBlocked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = if (state.adBlocked) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondaryContainer,
+                            shape = MaterialTheme.shapes.large
+                        ) {
+                            if (state.adBlocked) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_pause_24dp),
+                                    contentDescription = stringResource(R.string.adblock_pause_button_description)
+                                )
+                            } else {
+                                Image(
+                                    painter = painterResource(R.drawable.logo),
+                                    contentDescription = stringResource(R.string.app_logo),
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     ) { innerPadding ->
         Column(

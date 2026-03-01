@@ -8,24 +8,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import org.adaway.helper.ThemeHelper
 import org.adaway.ui.compose.ExpressiveAppContainer
 import org.adaway.ui.compose.ExpressiveScaffold
+import org.adaway.ui.compose.ExpressiveTopBar
 
 /**
  * This activity is the preferences activity.
@@ -95,7 +87,6 @@ class PrefsActivity : AppCompatActivity() {
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun PrefsActivityScreen(
     destination: PrefsDestination,
     onNavigateBack: () -> Unit,
@@ -104,27 +95,9 @@ private fun PrefsActivityScreen(
 ) {
     ExpressiveScaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(destination.titleRes),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            painter = painterResource(androidx.appcompat.R.drawable.abc_ic_ab_back_material),
-                            contentDescription = stringResource(androidx.appcompat.R.string.abc_action_bar_up_description)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
-                )
+            ExpressiveTopBar(
+                title = stringResource(destination.titleRes),
+                onNavigateBack = onNavigateBack
             )
         }
     ) { innerPadding ->

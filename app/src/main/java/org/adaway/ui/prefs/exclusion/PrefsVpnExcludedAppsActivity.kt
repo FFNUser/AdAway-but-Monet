@@ -17,14 +17,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +43,7 @@ import org.adaway.helper.ThemeHelper
 import org.adaway.ui.compose.ExpressiveAppContainer
 import org.adaway.ui.compose.ExpressiveScaffold
 import org.adaway.ui.compose.ExpressiveSection
+import org.adaway.ui.compose.ExpressiveTopBar
 import org.adaway.ui.compose.safeClickable
 
 /**
@@ -144,7 +142,6 @@ class PrefsVpnExcludedAppsActivity : AppCompatActivity(), ExcludedAppController 
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun VpnExcludedAppsScreen(
     applications: List<UserApp>,
     onNavigateBack: () -> Unit,
@@ -154,22 +151,9 @@ private fun VpnExcludedAppsScreen(
 ) {
     ExpressiveScaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.pref_vpn_exclude_user_apps_activity),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            painter = painterResource(androidx.appcompat.R.drawable.abc_ic_ab_back_material),
-                            contentDescription = stringResource(androidx.appcompat.R.string.abc_action_bar_up_description)
-                        )
-                    }
-                },
+            ExpressiveTopBar(
+                title = stringResource(R.string.pref_vpn_exclude_user_apps_activity),
+                onNavigateBack = onNavigateBack,
                 actions = {
                     IconButton(onClick = onSelectAll) {
                         Icon(
@@ -183,13 +167,7 @@ private fun VpnExcludedAppsScreen(
                             contentDescription = stringResource(R.string.pref_vpn_exclude_user_apps_deselect_all)
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                    actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                }
             )
         }
     ) { innerPadding ->

@@ -24,8 +24,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -36,7 +34,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +53,7 @@ import org.adaway.helper.ThemeHelper
 import org.adaway.ui.compose.ExpressiveAppContainer
 import org.adaway.ui.compose.ExpressiveScaffold
 import org.adaway.ui.compose.ExpressiveSection
+import org.adaway.ui.compose.ExpressiveTopBar
 import org.adaway.util.AppExecutors
 import java.util.concurrent.Executor
 
@@ -282,7 +280,6 @@ private data class SourceEditScreenState(
 )
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun SourceEditScreen(
     state: SourceEditScreenState,
     editing: Boolean,
@@ -298,47 +295,28 @@ private fun SourceEditScreen(
 ) {
     ExpressiveScaffold(
         topBar = {
-        CenterAlignedTopAppBar(
-            title = {
-                Text(
-                    text = stringResource(
-                        if (editing) R.string.source_edit_title else R.string.source_edit_add_title
-                    ),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold
-                )
-            },
-            navigationIcon = {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(
-                        painter = painterResource(androidx.appcompat.R.drawable.abc_ic_ab_back_material),
-                        contentDescription = stringResource(androidx.appcompat.R.string.abc_action_bar_up_description)
-                    )
-                }
-            },
-            actions = {
-                if (editing) {
-                    IconButton(onClick = onDelete) {
+            ExpressiveTopBar(
+                title = stringResource(
+                    if (editing) R.string.source_edit_title else R.string.source_edit_add_title
+                ),
+                onNavigateBack = onNavigateBack,
+                actions = {
+                    if (editing) {
+                        IconButton(onClick = onDelete) {
+                            Icon(
+                                painter = painterResource(R.drawable.outline_delete_24),
+                                contentDescription = stringResource(R.string.checkbox_list_context_delete)
+                            )
+                        }
+                    }
+                    IconButton(onClick = onSave) {
                         Icon(
-                            painter = painterResource(R.drawable.outline_delete_24),
-                            contentDescription = stringResource(R.string.checkbox_list_context_delete)
+                            painter = painterResource(R.drawable.baseline_check_24),
+                            contentDescription = stringResource(R.string.checkbox_list_context_apply)
                         )
                     }
                 }
-                IconButton(onClick = onSave) {
-                    Icon(
-                        painter = painterResource(R.drawable.baseline_check_24),
-                        contentDescription = stringResource(R.string.checkbox_list_context_apply)
-                    )
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                titleContentColor = MaterialTheme.colorScheme.onSurface,
-                navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant
             )
-        )
         }
     ) { innerPadding ->
         Column(
